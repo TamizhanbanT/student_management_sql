@@ -1,0 +1,107 @@
+-- Students Table
+CREATE TABLE Students (
+    StudentID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Age INT,
+    Gender VARCHAR(10),
+    Grade FLOAT
+);
+
+-- Courses Table
+CREATE TABLE Courses (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR(100),
+    Instructor VARCHAR(100)
+);
+
+-- Enrollments Table (linking Students and Courses)
+CREATE TABLE Enrollments (
+    EnrollmentID INT PRIMARY KEY,
+    StudentID INT,
+    CourseID INT,
+    FOREIGN KEY (StudentID) REFERENCES Students(StudentID),
+    FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
+);
+
+INSERT INTO Students (StudentID, Name, Age, Gender, Grade) VALUES
+(1, 'John Doe', 20, 'Male', 85.5),
+(2, 'Jane Smith', 22, 'Female', 78.0),
+(3, 'Emily Davis', 19, 'Female', 92.3),
+(4, 'Michael Johnson', 21, 'Male', 88.9),
+(5, 'Chris Lee', 20, 'Male', 75.2);
+
+INSERT INTO Courses VALUES
+(101, 'Database Systems', 'Prof. Smith'),
+(102, 'Algorithms', 'Prof. Brown'),
+(103, 'Web Development', 'Prof. Davis'),
+(104, 'Data Structures', 'Prof. Wilson');
+
+
+INSERT INTO Enrollments (EnrollmentID, StudentID, CourseID) VALUES
+(1, 1, 101),
+(2, 1, 102),
+(3, 2, 103),
+(4, 3, 104),
+(5, 4, 101),
+(6, 5, 102),
+(7, 2, 101),
+(8, 5, 104);
+
+
+
+select * from Enrollments
+
+SELECT Students.Name, Courses.CourseName
+FROM Students
+JOIN Enrollments ON Students.StudentID = Enrollments.StudentID
+JOIN Courses ON Enrollments.CourseID = Courses.CourseID
+WHERE Courses.CourseName = 'Database Systems';
+
+
+SELECT S.Name
+FROM Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+WHERE E.CourseID = (SELECT CourseID FROM Courses WHERE CourseName = 'Web Development');
+
+SELECT Students.Name, Courses.CourseName
+FROM Students 
+JOIN Enrollments  ON Students.StudentID = Enrollments.StudentID
+JOIN Courses  ON Enrollments.CourseID = Courses.CourseID;
+
+
+SELECT C.CourseName, COUNT(E.StudentID) AS TotalStudents
+FROM Courses C
+JOIN Enrollments E ON C.CourseID = E.CourseID
+GROUP BY C.CourseName;
+
+SELECT AVG(Grade) AS AverageGrade FROM Students;
+
+SELECT C.CourseName, COUNT(E.StudentID) AS TotalStudents
+FROM Courses C
+JOIN Enrollments E ON C.CourseID = E.CourseID
+GROUP BY C.CourseName
+HAVING COUNT(E.StudentID) > 1;
+
+
+UPDATE Students
+SET Grade = 90.5
+WHERE Name = 'John Doe';
+
+
+DELETE FROM Courses
+WHERE CourseID = 102; -- Deleting the 'Algorithms' course
+
+ALTER TABLE Students
+ADD Email VARCHAR(100);
+
+SELECT DISTINCT CourseName FROM Courses;
+
+
+SELECT S.Name
+FROM Students S
+JOIN Enrollments E ON S.StudentID = E.StudentID
+WHERE E.CourseID = (SELECT CourseID FROM Courses WHERE CourseName = 'Web Development');
+
+
+
+
